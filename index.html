@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ELEVSA">
+  <meta name="description" content="Asistente técnico de ELEVSA para diagnóstico de averías en ascensores">
+  <title>ELEVSA — Asistente Técnico</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="LOGO_ELEVSA.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1628;
+      --blue: #1e6be6;
+      --blue-glow: rgba(30,107,230,0.25);
+      --accent: #00d4ff;
+      --white: #f0f4ff;
+      --gray: #8899bb;
+      --success: #00e5a0;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--navy);
+      color: var(--white);
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 20% 10%, rgba(30,107,230,0.12) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* HEADER */
+    .header {
+      position: relative;
+      z-index: 10;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(10,22,40,0.97);
+      backdrop-filter: blur(20px);
+      flex-shrink: 0;
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(30,107,230,0.3));
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .header-text { flex: 1; }
+
+    .header-title {
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .header-sub {
+      font-size: 10px;
+      color: var(--gray);
+      font-weight: 300;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,229,160,0.1);
+      border: 1px solid rgba(0,229,160,0.2);
+      border-radius: 20px;
+      padding: 4px 10px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-text {
+      font-size: 10px;
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* IFRAME WRAPPER */
+    .chat-wrapper {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* FOOTER */
+    .footer {
+      position: relative;
+      z-index: 10;
+      padding: 6px;
+      background: rgba(10,22,40,0.97);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .footer span {
+      font-size: 9px;
+      color: rgba(136,153,187,0.4);
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <img src="LOGO_ELEVSA.jpeg" alt="ELEVSA" class="logo-img">
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <div class="header-title">Asistente Técnico</div>
+      <div class="header-sub">Diagnóstico inteligente de averías</div>
+    </div>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      <span class="status-text">Online</span>
+    </div>
+  </header>
+
+  <!-- CHAT IFRAME -->
+  <div class="chat-wrapper">
+    <iframe
+      src="https://n8n-n8n.twe6gk.easypanel.host/webhook/29a7bdb6-7d11-461c-8db4-697a1561fb58/chat"
+      title="ELEVSA Asistente Técnico"
+      allow="microphone"
+    ></iframe>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>ELEVSA · Asistente Técnico IA · GPT-4o-mini</span>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
