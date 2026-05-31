@@ -7,7 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ELEVSA">
-  <meta name="description" content="Asistente técnico de ELEVSA para diagnóstico de averías en ascensores">
   <title>ELEVSA — Asistente Técnico</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="LOGO_ELEVSA.jpeg">
@@ -16,17 +15,21 @@
   <style>
     :root {
       --navy: #0a1628;
+      --navy-mid: #0f2040;
+      --navy-light: #1a3060;
       --blue: #1e6be6;
       --blue-glow: rgba(30,107,230,0.25);
       --accent: #00d4ff;
       --white: #f0f4ff;
       --gray: #8899bb;
       --success: #00e5a0;
+      --danger: #ff4d6d;
       --font-head: 'Syne', sans-serif;
       --font-body: 'DM Sans', sans-serif;
+      --radius: 14px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       font-family: var(--font-body);
@@ -42,12 +45,13 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse 60% 40% at 20% 10%, rgba(30,107,230,0.12) 0%, transparent 60%);
+      background: radial-gradient(ellipse 60% 40% at 20% 10%, rgba(30,107,230,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse 40% 60% at 80% 90%, rgba(0,212,255,0.05) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* HEADER */
+    /* ── HEADER ── */
     .header {
       position: relative;
       z-index: 10;
@@ -68,87 +72,182 @@
       filter: drop-shadow(0 0 6px rgba(30,107,230,0.3));
     }
 
-    .header-divider {
-      width: 1px;
-      height: 24px;
-      background: rgba(255,255,255,0.1);
-    }
+    .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.1); }
 
     .header-text { flex: 1; }
-
-    .header-title {
-      font-family: var(--font-head);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--white);
-    }
-
-    .header-sub {
-      font-size: 10px;
-      color: var(--gray);
-      font-weight: 300;
-    }
+    .header-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--white); }
+    .header-sub { font-size: 10px; color: var(--gray); font-weight: 300; }
 
     .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      display: flex; align-items: center; gap: 5px;
       background: rgba(0,229,160,0.1);
       border: 1px solid rgba(0,229,160,0.2);
-      border-radius: 20px;
-      padding: 4px 10px;
+      border-radius: 20px; padding: 4px 10px;
     }
-
     .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 6px var(--success);
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--success); box-shadow: 0 0 6px var(--success);
       animation: pulse 2s ease-in-out infinite;
     }
+    .status-text { font-size: 10px; color: var(--success); font-weight: 500; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-    .status-text {
-      font-size: 10px;
-      color: var(--success);
-      font-weight: 500;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    /* IFRAME WRAPPER */
-    .chat-wrapper {
+    /* ── LOGIN SCREEN ── */
+    #loginScreen {
       flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--navy-mid);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 36px 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .login-logo {
+      width: 72px; height: 72px;
+      background: white;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      padding: 8px;
+      box-shadow: 0 8px 24px var(--blue-glow);
+    }
+    .login-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+    .login-title {
+      font-family: var(--font-head);
+      font-size: 20px; font-weight: 800;
+      text-align: center; margin-bottom: 4px;
+      background: linear-gradient(135deg, var(--white) 0%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .login-sub {
+      font-size: 12px; color: var(--gray);
+      text-align: center; margin-bottom: 28px;
+    }
+
+    .input-group { margin-bottom: 14px; }
+
+    .input-label {
+      font-size: 11px; color: var(--gray);
+      font-weight: 500; letter-spacing: 0.5px;
+      text-transform: uppercase; margin-bottom: 6px;
+      display: block;
+    }
+
+    .input-field {
+      width: 100%;
+      background: var(--navy-light);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+
+    .input-field::placeholder { color: rgba(136,153,187,0.5); }
+
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--blue) 0%, #1558cc 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      color: white;
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px var(--blue-glow);
+      letter-spacing: 0.5px;
+    }
+
+    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--blue-glow); }
+    .login-btn:active { transform: scale(0.98); }
+
+    .error-msg {
+      background: rgba(255,77,109,0.1);
+      border: 1px solid rgba(255,77,109,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--danger);
+      text-align: center;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; animation: shake 0.4s ease; }
+
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+    }
+
+    /* ── CHAT SCREEN ── */
+    #chatScreen {
+      flex: 1;
+      display: none;
+      flex-direction: column;
       position: relative;
       z-index: 1;
       overflow: hidden;
     }
 
+    #chatScreen.visible { display: flex; }
+
+    .chat-wrapper { flex: 1; overflow: hidden; }
+
     iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
+      width: 100%; height: 100%;
+      border: none; display: block;
     }
 
-    /* FOOTER */
     .footer {
-      position: relative;
-      z-index: 10;
-      padding: 6px;
+      position: relative; z-index: 10;
+      padding: 5px;
       background: rgba(10,22,40,0.97);
       border-top: 1px solid rgba(255,255,255,0.04);
-      text-align: center;
-      flex-shrink: 0;
+      text-align: center; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 14px;
     }
 
-    .footer span {
-      font-size: 9px;
-      color: rgba(136,153,187,0.4);
-      letter-spacing: 0.3px;
+    .footer span { font-size: 9px; color: rgba(136,153,187,0.4); }
+
+    .logout-btn {
+      background: none; border: 1px solid rgba(255,77,109,0.3);
+      border-radius: 6px; padding: 3px 10px;
+      color: rgba(255,77,109,0.7); font-size: 10px;
+      cursor: pointer; font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { background: rgba(255,77,109,0.1); color: var(--danger); }
+
+    @keyframes fadeUp {
+      from{opacity:0;transform:translateY(16px)}
+      to{opacity:1;transform:translateY(0)}
     }
   </style>
 </head>
@@ -168,21 +267,81 @@
     </div>
   </header>
 
-  <!-- CHAT IFRAME -->
-  <div class="chat-wrapper">
-    <iframe
-      src="https://n8n-n8n.twe6gk.easypanel.host/webhook/29a7bdb6-7d11-461c-8db4-697a1561fb58/chat"
-      title="ELEVSA Asistente Técnico"
-      allow="microphone"
-    ></iframe>
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="LOGO_ELEVSA.jpeg" alt="ELEVSA">
+      </div>
+      <div class="login-title">Acceso técnicos</div>
+      <div class="login-sub">Introduce tus credenciales para acceder al asistente</div>
+
+      <div class="input-group">
+        <label class="input-label" for="username">Usuario</label>
+        <input class="input-field" type="text" id="username" placeholder="Usuario" autocomplete="username" autocapitalize="none">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="password">Contraseña</label>
+        <input class="input-field" type="password" id="password" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+
+      <button class="login-btn" onclick="doLogin()">Entrar</button>
+      <div class="error-msg" id="errorMsg">Usuario o contraseña incorrectos</div>
+    </div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <span>ELEVSA · Asistente Técnico IA · GPT-4o-mini</span>
+  <!-- CHAT -->
+  <div id="chatScreen">
+    <div class="chat-wrapper">
+      <iframe
+        src="https://n8n-n8n.twe6gk.easypanel.host/webhook/29a7bdb6-7d11-461c-8db4-697a1561fb58/chat"
+        title="ELEVSA Asistente Técnico"
+        allow="microphone"
+      ></iframe>
+    </div>
+    <div class="footer">
+      <span>ELEVSA · Asistente Técnico IA · GPT-4o-mini</span>
+      <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+    </div>
   </div>
 
   <script>
+    const USERS = { 'elevsatecnico': 'elevsa2026.' };
+
+    function doLogin() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value;
+      const err  = document.getElementById('errorMsg');
+
+      if (USERS[user] && USERS[user] === pass) {
+        sessionStorage.setItem('elevsa_auth', '1');
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('chatScreen').classList.add('visible');
+        err.classList.remove('visible');
+      } else {
+        err.classList.remove('visible');
+        void err.offsetWidth; // reflow para reiniciar animación
+        err.classList.add('visible');
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    }
+
+    function doLogout() {
+      sessionStorage.removeItem('elevsa_auth');
+      document.getElementById('chatScreen').classList.remove('visible');
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    // Mantener sesión durante la visita
+    if (sessionStorage.getItem('elevsa_auth') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('chatScreen').classList.add('visible');
+    }
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
